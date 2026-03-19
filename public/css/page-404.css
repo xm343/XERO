@@ -1,0 +1,101 @@
+body {
+    background-color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.error-container {
+    text-align: center;
+    max-width: 600px;
+}
+
+.logo-container {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+}
+
+.logo-text {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.ufo-image {
+    width: 150px;
+    margin-bottom: -40px;
+    position: relative;
+    z-index: 1;
+}
+
+.error-code {
+    font-size: 150px;
+    font-weight: 500;
+    color: #333;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.ufo-beam {
+    position: relative;
+    display: inline-block;
+}
+
+.ufo-beam::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 150px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(255,255,255,0) 100%);
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+}
+
+.error-message {
+    font-size: 28px;
+    font-weight: 600;
+    margin-top: 20px;
+    color: #000;
+}
+
+.btn-home {
+    margin-top: 30px;
+    background-color: #a8a8a8;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    border: none;
+    display: inline-block;
+}
+
+.btn-home:hover {
+    background-color: #888888;
+    color: white;
+    text-decoration: none;
+}
+
+.zero-container {
+    position: relative;
+    display: inline-block;
+}
+
+.ufo-icon {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+}
