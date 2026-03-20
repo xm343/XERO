@@ -3,17 +3,8 @@ const app = express()
 const path = require('path')
 const { connectDB } = require('./config/db')
 const fs = require('fs')
+require('dotenv').config()
 
-// Load .env file manually
-if (fs.existsSync('.env')) {
-    const envConfig = fs.readFileSync('.env', 'utf8')
-    envConfig.split('\n').forEach(line => {
-        const [key, ...valueParts] = line.split('=')
-        if (key && valueParts.length > 0) {
-            process.env[key.trim()] = valueParts.join('=').trim()
-        }
-    })
-}
 
 const userRoute = require('./routes/userRoute')
 // const adminRoute = require('./routes/adminRoute')
