@@ -1,3 +1,14 @@
+
+
+
+
+function generateOtp(){
+    
+}
+
+
+
+
 const errorPage = async (req, res) => {
     try {
         res.render('page-404')
@@ -7,6 +18,15 @@ const errorPage = async (req, res) => {
     }
 }
 
+const signup = async(req,res)=>{
+    try {
+        res.render('signup')
+    } catch (error) { 
+        res.status(500).redirect('/errorPage')
+        console.log('could not render signup ',error)     
+    }
+}
+
 module.exports = {
-    errorPage
+    errorPage,signup
 }

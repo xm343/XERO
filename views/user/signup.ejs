@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | XERO</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/signup.css">
+</head>
+<body>
+
+    <div class="signup-container">
+        <!-- Left Side: Image -->
+        <div class="signup-image-side">
+            <div class="image-header">
+                <img src="/images/xero-logo.png" alt="XERO" class="img-logo">
+                <img src="/images/misfits-text.png" alt="Made for the Misfits" class="misfits-text">
+            </div>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="signup-form-side">
+            <h1>CREATE ACCOUNT</h1>
+
+            <a href="#" class="google-btn">
+                <img src="/images/google-logo.png" alt="Google Logo">
+                LOGIN WITH GOOGLE
+            </a>
+
+            <div class="divider"></div>
+
+            <form action="/signup" method="POST">
+                <div class="form-group">
+                    <input type="text" name="name" class="form-control" placeholder="NAME" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" placeholder="EMAIL" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="tel" name="phone" class="form-control" placeholder="PHONE NUMBER" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="PASSWORD" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" name="confirmPassword" class="form-control" placeholder="CONFIRM PASSWORD" required>
+                </div>
+
+                <div class="btn-signup-container">
+                    <button type="submit" class="btn btn-signup">SIGN UP</button>
+                </div>
+            </form>
+
+            <div class="login-link-text">
+                Already have account! <a href="/login">Login Now...</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
