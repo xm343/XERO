@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | XERO</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <!-- Left Side: Image -->
+        <div class="login-image-side">
+            <div class="image-header">
+                <img src="/images/xero-logo.png" alt="XERO" class="img-logo">
+                <img src="/images/misfits-text.png" alt="Made for the Misfits" class="misfits-text">
+            </div>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="login-form-side">
+            <h1>LOGIN</h1>
+
+            <a href="/auth/google" class="google-btn">
+                <img src="/images/google-logo.png" alt="Google Logo">
+                LOGIN WITH GOOGLE
+            </a>
+
+            <div class="divider"></div>
+
+            <% if (locals.message) { %>
+                <div class="alert alert-danger" style="font-size: 0.9rem; padding: 10px; border-radius: 8px;">
+                    <%= message %>
+                </div>
+            <% } %>
+
+            <form id="loginform" action="/login" method="POST" novalidate>
+                <div id="error-email" class="error-message"></div>
+                <div class="form-group">
+                    <input type="email" name="email" id="email" class="form-control" placeholder="EMAIL">
+                </div>
+
+                <div id="error-password" class="error-message"></div>
+                <div class="form-group">
+                    <input type="password" name="password" id="password" class="form-control" placeholder="PASSWORD">
+                </div>
+
+                <div class="forgot-password">
+                    <a href="/forgot-password">Forgot Password?</a>
+                </div>
+
+                <div class="btn-login-container">
+                    <button type="submit" class="btn btn-login">LOGIN</button>
+                </div>
+            </form>
+
+            <div class="signup-link-text">
+                Don't have account? <a href="/signup">Signup Now...</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginform = document.getElementById('loginform');
+            const emailid = document.getElementById('email');
+            const passid = document.getElementById('password');
+
+            const errorEmail = document.getElementById('error-email');
+            const errorPassword = document.getElementById('error-password');
+
+            loginform.addEventListener('submit', function (e) {
+                let isValid = true;
+
+                // Email Validation
+                const emailval = emailid.value.trim();
+                const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}$/;
+                if (!emailpattern.test(emailval)) {
+                    errorEmail.innerHTML = 'Enter a valid email';
+                    errorEmail.style.display = 'block';
+                    isValid = false;
+                } else {
+                    errorEmail.style.display = 'none';
+                    errorEmail.innerHTML = '';
+                }
+
+                // Password Validation
+                const passval = passid.value;
+                if (passval.length === 0) {
+                    errorPassword.innerHTML = 'Enter your password';
+                    errorPassword.style.display = 'block';
+                    isValid = false;
+                } else {
+                    errorPassword.style.display = 'none';
+                    errorPassword.innerHTML = '';
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -5,14 +5,14 @@ body, html {
     background-color: #f4f4f4;
 }
 
-.signup-container {
+.login-container {
     display: flex;
     height: 100vh;
 }
 
-.signup-image-side {
+.login-image-side {
     flex: 1.2;
-    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/signup-bg.png');
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/login-tshirt.png');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -37,7 +37,6 @@ body, html {
     height: 55px;
     width: auto;
     object-fit: contain;
-    filter: brightness(1.1);
 }
 
 .misfits-text {
@@ -47,7 +46,7 @@ body, html {
     opacity: 0.95;
 }
 
-.signup-form-side {
+.login-form-side {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -121,13 +120,13 @@ h1 {
     border-color: #333;
 }
 
-.btn-signup-container {
+.btn-login-container {
     display: flex;
     justify-content: flex-end;
     margin-top: 15px;
 }
 
-.btn-signup {
+.btn-login {
     background-color: #a0a0a0;
     color: #fff;
     border: 2px solid #000;
@@ -141,48 +140,65 @@ h1 {
     letter-spacing: 1.5px;
 }
 
-.btn-signup:hover {
+.btn-login:hover {
     background-color: #808080;
     transform: translate(-1px, -1px);
     box-shadow: 5px 5px 0px rgba(0,0,0,1);
 }
 
-.btn-signup:active {
+.btn-login:active {
     transform: translate(3px, 3px);
     box-shadow: 1px 1px 0px rgba(0,0,0,1);
 }
 
-.login-link-text {
+.signup-link-text {
     margin-top: 40px;
     font-size: 17px;
     font-weight: 400;
 }
 
-.login-link-text a {
+.signup-link-text a {
     color: #0000ff;
     text-decoration: none;
     font-weight: 700;
 }
 
-.login-link-text a:hover {
+.signup-link-text a:hover {
+    text-decoration: underline;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: -15px;
+    margin-bottom: 20px;
+}
+
+.forgot-password a {
+    color: #555;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.forgot-password a:hover {
     text-decoration: underline;
 }
 
 @media (max-width: 992px) {
-    .signup-image-side {
+    .login-image-side {
         display: none;
     }
-    .signup-form-side {
+    .login-form-side {
         padding: 5% 10%;
     }
-    .signup-container {
+    .login-container {
         height: auto;
         min-height: 100vh;
     }
 }
-.error-message{
-    display: none;
-    font-size: .75rem;
+
+.error-message {
+    font-size: 0.85rem;
     color: red;
-    
+    margin-bottom: 10px;
+    display: none;
 }
