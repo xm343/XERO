@@ -38,7 +38,7 @@ async function sendVerifcationMail(email,otp){
 
 const errorPage = async (req, res) => {
     try {
-        res.render('page-404')
+        res.render('user/page-404')
     } catch (error) {
         console.error('Error rendering 404 page:', error)
         res.status(500).send('Internal Server Error')
@@ -47,7 +47,7 @@ const errorPage = async (req, res) => {
 
 const loadSignup = async(req,res)=>{
     try {
-        res.render('signup')
+        res.render('user/signup')
     } catch (error) { 
         res.status(500).redirect('/page-error')
         console.log('could not render signup ',error.message)     
@@ -58,11 +58,11 @@ const signup = async(req,res)=>{
     const {name, email, phone, password, confirmPassword} = req.body
     try {
         if(password!==confirmPassword){
-           return res.render('signup',{message:'Password do not match'})
+           return res.render('user/signup',{message:'Password do not match'})
         }
         const findUser = await User.findOne({email})
         if(findUser){
-           return res.render('signup',{message:'User already exists'})
+           return res.render('user/signup',{message:'User already exists'})
         }
         const otp = generateOtp()
         const emailsent = await sendVerifcationMail(email,otp)
@@ -72,7 +72,7 @@ const signup = async(req,res)=>{
         req.session.userOtp=otp
         req.session.userData = {name, email, phone, password}
 
-        res.render('verify-otp')
+        res.render('user/verify-otp')
         console.log(`otp:${otp}`)
 
     } catch (error) {
@@ -98,7 +98,7 @@ const verifyOtp = async (req,res) => {
             req.session.user = saveUser._id
             res.redirect('/')
         }else{
-            res.render('verify-otp',{message:'Invalid OTP'})
+            res.render('user/verify-otp',{message:'Invalid OTP'})
         }
     } catch (error) {
         console.log('error verifying otp ',error)
@@ -117,7 +117,7 @@ const resendOtp = async (req,res) => {
         const emailSent = await sendVerifcationMail(email,otp)
         if(emailSent){
             console.log(`Resent OTP: ${otp}`)
-            res.status(200).render('verify-otp')
+            res.status(200).render('user/verify-otp')
         }else{
             res.status(500).json({success:false, message:'Error sending email'})
         }
@@ -130,7 +130,7 @@ const resendOtp = async (req,res) => {
 const loadLogin = async(req,res)=>{
     try {   
         if(!req.session.user){
-            return res.render('login')
+            return res.render('user/login')
         } else {
             return res.redirect('/')
         }
@@ -146,22 +146,22 @@ const login = async (req, res) => {
         const findUser = await User.findOne({ isAdmin: 0, email: email });
 
         if (!findUser) {
-            return res.render('login', { message: 'User not found' });
+            return res.render('user/login', { message: 'User not found' });
         }
         if (findUser.isBlocked) {
-            return res.render('login', { message: 'User is blocked by admin' });
+            return res.render('user/login', { message: 'User is blocked by admin' });
         }
 
         const passwordMatch = await bcrypt.compare(password, findUser.password);
         if (!passwordMatch) {
-            return res.render('login', { message: 'Incorrect Password' });
+            return res.render('user/login', { message: 'Incorrect Password' });
         }
 
         req.session.user = findUser._id;
         res.redirect('/');
     } catch (error) {
         console.error('login error', error);
-        res.render('login', { message: 'login failed. Please try again later' });
+        res.render('user/login', { message: 'login failed. Please try again later' });
     }
 };
 

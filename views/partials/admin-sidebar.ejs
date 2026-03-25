@@ -1,0 +1,56 @@
+<nav class="col-xl-2 col-md-1 bg-white sidebar shadow-sm d-none d-md-block" style="min-height: 100vh; padding-top: 80px;">
+    <ul class="nav flex-column mt-3">
+        <li class="nav-item">
+            <a class="nav-link sidebar-link px-xl-3 <%= activePage === 'dashboard' ? 'active' : '' %>" href="/admin">
+                <i class="fa-solid fa-tachometer-alt me-xl-2"></i>
+                <span class="d-none d-xl-inline">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link sidebar-link px-xl-3 <%= activePage === 'customers' ? 'active' : '' %>" href="/admin/users">
+                <i class="fa-solid fa-users me-xl-2"></i>
+                <span class="d-none d-xl-inline">Customers</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link sidebar-link px-xl-3 <%= activePage === 'categories' ? 'active' : '' %>" href="/admin/category">
+                <i class="fa-solid fa-list me-xl-2"></i>
+                <span class="d-none d-xl-inline">Categories</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link sidebar-link px-xl-3 <%= activePage === 'products' ? 'active' : '' %>" href="/admin/products">
+                <i class="fa-solid fa-box me-xl-2"></i>
+                <span class="d-none d-xl-inline">Products</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link sidebar-link px-xl-3 <%= activePage === 'orders' ? 'active' : '' %>" href="/admin/orders">
+                <i class="fa-solid fa-shopping-cart me-xl-2"></i>
+                <span class="d-none d-xl-inline">Orders</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<style>
+    .sidebar-link {
+        color: #333;
+        padding: 12px 20px;
+        display: block;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-weight: 500;
+    }
+    .sidebar-link:hover {
+        background-color: #f8f9fa;
+        color: #000;
+    }
+    .sidebar-link.active {
+        background-color: #000;
+        color: #fff !important;
+    }
+    .sidebar {
+        border-right: 1px solid #eee;
+    }
+</style>

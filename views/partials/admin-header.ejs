@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background: #000;">
+    <div class="container px-4">
+        <!-- Sidebar Toggle (visible below md) -->
+        <button class="btn d-md-none text-white me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/admin/dashboard">
+            <img src="/images/xero-logo.png" alt="XERO" height="30">
+            <span style="font-size: 24px; color: #ffffff; letter-spacing: 1px;">XERO ADMIN</span>
+        </a>
+
+        <!-- Right Side -->
+        <div class="d-flex align-items-center gap-3">
+            <div class="dropdown">
+                <a href="#" class="avatar d-flex align-items-center gap-2 text-decoration-none"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-circle-user fa-lg" style="color: #ffffff;"></i>
+                    <span class="d-none d-md-inline text-white fw-medium">Admin</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end mt-2 shadow" style="border: none; border-radius: 8px;">
+                    <li>
+                        <a class="dropdown-item py-2 text-danger" href="/admin/logout">
+                            <i class="fa-solid fa-sign-out-alt me-2"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

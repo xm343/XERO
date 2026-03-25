@@ -9,12 +9,13 @@ require('dotenv').config()
 
 
 const userRoute = require('./routes/userRoute')
-// const adminRoute = require('./routes/adminRoute')
+const adminRoute = require('./routes/adminRoute')
 
 connectDB()
 
 app.set('view engine', 'ejs')
-app.set('views', [path.join(__dirname, 'views/user'), path.join(__dirname, 'views/admin')])
+app.set('views', path.join(__dirname, 'views'))
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -36,10 +37,11 @@ app.use(passport.session());
 
 
 app.use('/', userRoute)
-// app.use('/admin', adminRoute)
+app.use('/admin', adminRoute)
+
 
 app.use((req, res) => {
-    res.status(404).render('page-404')
+    res.status(404).render('user/page-404')
 })
 
 const PORT = process.env.PORT || 3000

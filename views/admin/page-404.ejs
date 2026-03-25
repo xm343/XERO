@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | XERO</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/page-404.css">
+    <style>
+        .error-code span {
+            display: inline-block;
+            position: relative;
+        }
+        .ufo-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .ufo-img {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            z-index: 2;
+        }
+        .beam {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 180px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(255,255,255,0) 100%);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="/images/logo.png" alt="XERO" height="40">
+    </div>
+
+    <div class="error-container">
+        <div class="error-code">
+            <span>4</span>
+            <span class="ufo-wrapper">
+
+                <div class="beam"></div>
+                0
+            </span>
+            <span>4</span>
+        </div>
+        
+        <div class="error-message">
+            Sorry, that page is missing
+        </div>
+
+        <a href="/" class="btn btn-home">Go back home</a>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

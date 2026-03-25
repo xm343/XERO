@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category | XERO ADMIN</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .main-content {
+            padding-top: 80px;
+        }
+        .content-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background-color: #fff;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <%- include('../partials/admin-header') %>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <%- include('../partials/admin-sidebar', { activePage: 'categories' }) %>
+
+            <!-- Main Content -->
+            <main class="col-md-11 col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                    <h1 class="h2 fw-bold text-uppercase">Edit Category</h1>
+                    <a href="/admin/category" class="btn btn-outline-dark fw-bold">
+                        <i class="fa-solid fa-arrow-left me-2"></i> Back to Categories
+                    </a>
+                </div>
+
+                <div class="content-card">
+                    <form id="editCategoryForm">
+                        <input type="hidden" id="categoryId" value="<%= category._id %>">
+                        <div class="mb-4">
+                            <label for="categoryName" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="categoryName" name="name" value="<%= category.name %>" required>
+                            <div id="nameError" class="text-danger mt-1 small" style="display: none;"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="categoryDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="categoryDescription" name="description" rows="5" required><%= category.description %></textarea>
+                            <div id="descriptionError" class="text-danger mt-1 small" style="display: none;"></div>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 fw-bold py-2">Update Category</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('editCategoryForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('categoryId').value;
+            const name = document.getElementById('categoryName').value.trim();
+            const description = document.getElementById('categoryDescription').value.trim();
+            
+            let isValid = true;
+
+            if (name === '') {
+                document.getElementById('nameError').textContent = 'Name is required';
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('nameError').style.display = 'none';
+            }
+
+            if (description === '') {
+                document.getElementById('descriptionError').textContent = 'Description is required';
+                document.getElementById('descriptionError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('descriptionError').style.display = 'none';
+            }
+
+            if (!isValid) return;
+
+            try {
+                const response = await fetch('/admin/editCategory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id, name, description })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    window.location.href = '/admin/category';
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
