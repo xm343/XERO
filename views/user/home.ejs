@@ -1,0 +1,169 @@
+<%- include("../../views/partials/user-header") %>
+
+    <!-- Carousel -->
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/images/HOME-CAROSAL.png" class="d-block w-100" alt="New Arrival">
+            </div>
+            <div class="carousel-item">
+                <img src="/images/HOME-CAROSAL1.png" class="d-block w-100" alt="Exclusive Collection">
+            </div>
+        </div>
+    </div>
+
+    <!-- New Arrivals Section -->
+    <div class="container">
+        <div class="section-title">
+            <style>
+                .section-title {
+                    text-align: center;
+                    margin: 80px 0 50px;
+                }
+                .section-title h2 {
+                    font-size: 32px;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                }
+                .product-card {
+                    background: #fff;
+                    border: 1px solid #f0f0f0;
+                    margin-bottom: 30px;
+                    transition: all 0.3s ease;
+                    border-radius: 12px;
+                    overflow: hidden;
+                }
+                .product-card:hover {
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+                    transform: translateY(-5px);
+                }
+                .product-img-container {
+                    background-color: #f9f9f9;
+                    height: 280px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                    position: relative;
+                }
+                .product-img-container img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
+                }
+                .product-info-wrap {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    padding: 20px;
+                }
+                .product-info-left {
+                    flex: 1;
+                    min-width: 0;
+                    padding-right: 10px;
+                }
+                .product-brand {
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #999;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .product-name {
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #111;
+                    text-decoration: none;
+                    display: block;
+                    margin-bottom: 8px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .product-price {
+                    font-size: 17px;
+                    font-weight: 800;
+                }
+                .old-price {
+                    color: #bbb;
+                    text-decoration: line-through;
+                    font-size: 14px;
+                    margin-right: 8px;
+                    font-weight: 500;
+                }
+                .product-info-right {
+                    display: flex;
+                    gap: 12px;
+                }
+                .action-btn {
+                    width: 40px;
+                    height: 40px;
+                    background: #f4f4f4;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: none;
+                    transition: all 0.2s ease;
+                }
+                .action-btn:hover {
+                    background: #000;
+                }
+                .action-btn img {
+                    width: 18px !important;
+                    height: 18px !important;
+                }
+                .action-btn:hover img {
+                    filter: invert(1);
+                }
+            </style>
+            <h2>New Arrivals</h2>
+        </div>
+        
+        <div class="row">
+            <% products.forEach(product => { %>
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="product-img-container">
+                            <a href="/productDetails?id=<%= product._id %>">
+                                <img src="/uploads/re-image/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                            </a>
+                        </div>
+                        
+                        <div class="product-info-wrap">
+                            <!-- Left: Details -->
+                            <div class="product-info-left">
+                                <div class="product-brand"><%= product.brand %></div>
+                                <a href="/productDetails?id=<%= product._id %>" class="product-name"><%= product.productName %></a>
+                                <div class="product-price">
+                                    <% if (product.salesPrice < product.regularPrice) { %>
+                                        <span class="old-price">₹<%= product.regularPrice %></span>
+                                    <% } %>
+                                    ₹<%= product.salesPrice %>
+                                </div>
+                            </div>
+
+                            <!-- Right: Icons -->
+                            <div class="product-info-right">
+                                <button class="action-btn" onclick="addToWishlist('<%= product._id %>')" title="Wishlist">
+                                    <img src="/images/FAVORITES.png" alt="Wishlist">
+                                </button>
+                                <button class="action-btn" onclick="addToCart('<%= product._id %>')" title="Add to Cart">
+                                    <img src="/images/add-to-cart-icon.png" alt="Add to Cart">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="/shop" class="btn btn-dark px-5 py-3 rounded-0 fw-bold">DISCOVER ALL</a>
+        </div>
+    </div>
+
+<%- include("../../views/partials/user-footer") %>
