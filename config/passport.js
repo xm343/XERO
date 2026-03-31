@@ -6,7 +6,7 @@ require('dotenv').config();
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/auth/google/callback'
+    callbackURL: '/auth/google/callback'
 },
 async (accessToken, refreshToken, profile, done) => {
     try {
@@ -14,11 +14,18 @@ async (accessToken, refreshToken, profile, done) => {
         if (user) {
             return done(null, user);
         } else {
-            // Check if profile emails array exists and has at least one email
             const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
-            
             if (!email) {
                 return done(new Error("Email not provided by Google"), null);
+            }
+
+            // Check if user already exists with this email
+            let existingUser = await User.findOne({ email: email });
+            if (existingUser) {
+                // Link googleId to existing account
+                existingUser.googleId = profile.id;
+                await existingUser.save();
+                return done(null, existingUser);
             }
 
             const newUser = new User({

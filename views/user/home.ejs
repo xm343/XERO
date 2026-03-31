@@ -3,13 +3,43 @@
     <!-- Carousel -->
     <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="/images/HOME-CAROSAL.png" class="d-block w-100" alt="New Arrival">
-            </div>
-            <div class="carousel-item">
-                <img src="/images/HOME-CAROSAL1.png" class="d-block w-100" alt="Exclusive Collection">
-            </div>
+            <% if (banner && banner.length > 0) { %>
+                <% banner.forEach((item, index) => { %>
+                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                        <a href="<%= item.link || '#' %>">
+                            <img src="/uploads/re-image/<%= item.image %>" class="d-block w-100" alt="<%= item.title %>">
+                            <% if (item.title || item.description) { %>
+                            <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.5); border-radius: 10px; padding: 20px;">
+                                <% if (item.title) { %>
+                                    <h5 style="font-weight: 900; text-transform: uppercase;"><%= item.title %></h5>
+                                <% } %>
+                                <% if (item.description) { %>
+                                    <p><%= item.description %></p>
+                                <% } %>
+                            </div>
+                            <% } %>
+                        </a>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="carousel-item active">
+                    <img src="/images/HOME-CAROSAL.png" class="d-block w-100" alt="New Arrival">
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/HOME-CAROSAL1.png" class="d-block w-100" alt="Exclusive Collection">
+                </div>
+            <% } %>
         </div>
+        <% if (banner && banner.length > 1) { %>
+            <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        <% } %>
     </div>
 
     <!-- New Arrivals Section -->

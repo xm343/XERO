@@ -1,6 +1,7 @@
 const User = require('../../models/userSchema')
 const Category = require('../../models/categorySchema')
 const Product = require('../../models/productSchema')
+const Banner = require('../../models/bannerSchema')
 const nodemailer = require('nodemailer')
 const env = require('dotenv').config()
 const bcrypt = require('bcrypt')
@@ -168,6 +169,11 @@ const loadHomepage = async (req, res) => {
     try {
         const user = req.session.user
         const categories = await Category.find({isListed: true})
+        const banner = await Banner.find({
+            startDate: { $lte: new Date() },
+            endDate: { $gte: new Date() }
+        })
+
         let productData = await Product.find({
             isBlocked: false,
             category: { $in: categories.map(cat => cat._id) },
@@ -182,13 +188,15 @@ const loadHomepage = async (req, res) => {
             res.render('user/home', {
                 user: userData,
                 products: productData,
-                categories: categories
+                categories: categories,
+                banner: banner
             })
         } else {
             res.render('user/home', {
                 user: null,
                 products: productData,
-                categories: categories
+                categories: categories,
+                banner: banner
             })
         }
     } catch (error) {

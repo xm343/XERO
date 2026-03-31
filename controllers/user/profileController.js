@@ -3,16 +3,16 @@ const nodemailer = require('nodemailer')
 const env = require('dotenv').config()
 const bcrypt = require('bcrypt')
 
-function generateOtp(){
+function generateOtp() {
     let digits = '0123456789'
-    let otp =''
-    for(let i=0;i<6;i++){
-        otp+=digits[Math.floor(Math.random()*10)]
+    let otp = ''
+    for (let i = 0; i < 6; i++) {
+        otp += digits[Math.floor(Math.random() * 10)]
     }
     return otp
 }
 
-async function sendVerificationMail(email, otp){
+async function sendVerificationMail(email, otp) {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -30,7 +30,7 @@ async function sendVerificationMail(email, otp){
             subject: 'Password Reset OTP',
             text: `Your OTP for password reset is ${otp}`,
             html: `<b>Your OTP is ${otp}</b>`
-        }) 
+        })
         console.log(`Email sent:`, info.messageId)
         return true
     } catch (error) {
@@ -39,7 +39,7 @@ async function sendVerificationMail(email, otp){
     }
 }
 
-async function securePassword(password){
+async function securePassword(password) {
     try {
         const hash = await bcrypt.hash(password, 10)
         return hash
@@ -49,7 +49,7 @@ async function securePassword(password){
 }
 
 
-const getForgotPassword = async(req,res)=>{
+const getForgotPassword = async (req, res) => {
     try {
         res.render('user/forgot-password')
     } catch (error) {
@@ -59,24 +59,24 @@ const getForgotPassword = async(req,res)=>{
 }
 
 
-const getEmailVal = async(req,res)=>{
+const getEmailVal = async (req, res) => {
     try {
-        const {email} = req.body
-        const findUser = await User.findOne({email:email})
-        if(findUser){
+        const { email } = req.body
+        const findUser = await User.findOne({ email: email })
+        if (findUser) {
             const otp = generateOtp()
             const sendMail = await sendVerificationMail(email, otp)
-            if(sendMail){
+            if (sendMail) {
                 req.session.userOtp = otp
                 req.session.email = email
                 res.render('user/otp-page')
                 console.log('OTP:', otp)
             }
-            else{
-                res.status(400).json({success:false, message:'Failed to send OTP'})
+            else {
+                res.status(400).json({ success: false, message: 'Failed to send OTP' })
             }
         }
-        else{
+        else {
             res.render('user/forgot-password', {
                 message: 'User with this email does not exist'
             })
@@ -89,24 +89,24 @@ const getEmailVal = async(req,res)=>{
 }
 
 
-const verifyOtp = async(req,res)=>{
+const verifyOtp = async (req, res) => {
     try {
         const enteredOtp = req.body.otp
-        if(enteredOtp === req.session.userOtp){
-            res.status(200).json({success: true, redirectUrl: '/reset-password'})
+        if (enteredOtp === req.session.userOtp) {
+            res.status(200).json({ success: true, redirectUrl: '/reset-password' })
         }
-        else{
-            res.status(400).json({success: false, message: 'OTP does not match'})
+        else {
+            res.status(400).json({ success: false, message: 'OTP does not match' })
         }
 
     } catch (error) {
         console.log('Error verifying OTP', error)
-        res.status(500).json({success: false, message: 'Internal server error'})
+        res.status(500).json({ success: false, message: 'Internal server error' })
     }
 }
 
 
-const getConfirmPassword = async(req,res)=>{
+const getConfirmPassword = async (req, res) => {
     try {
         res.render('user/reset-password')
     } catch (error) {
@@ -115,39 +115,39 @@ const getConfirmPassword = async(req,res)=>{
     }
 }
 
-const resendOtp = async(req,res)=>{
+const resendOtp = async (req, res) => {
     try {
         const email = req.session.email
         const otp = generateOtp()
         req.session.userOtp = otp
         const sendMail = await sendVerificationMail(email, otp)
         console.log('Resent OTP:', otp)
-        if(sendMail){
-            res.status(200).json({success: true, message: 'OTP send successful'})
+        if (sendMail) {
+            res.status(200).json({ success: true, message: 'OTP send successful' })
         }
-        else{
-            res.status(500).json({success: false, message: 'OTP send fail'})
+        else {
+            res.status(500).json({ success: false, message: 'OTP send fail' })
         }
     } catch (error) {
         console.log('Error resending OTP', error)
-        res.status(500).json({success: false, message: 'Internal server error'})
+        res.status(500).json({ success: false, message: 'Internal server error' })
     }
 }
 
-const resetPassword = async(req,res)=>{
+const resetPassword = async (req, res) => {
     try {
-        const {pass1, pass2} = req.body
+        const { pass1, pass2 } = req.body
         const email = req.session.email
-        if(pass1 === pass2){
+        if (pass1 === pass2) {
             const passwordHash = await securePassword(pass1)
             await User.updateOne(
-                {email: email},
-                {$set: {password: passwordHash}}
+                { email: email },
+                { $set: { password: passwordHash } }
             )
             res.redirect('/login')
         }
-        else{
-            res.render('user/reset-password', {message: 'Passwords do not match'})
+        else {
+            res.render('user/reset-password', { message: 'Passwords do not match' })
         }
     } catch (error) {
         console.log('Error resetting password', error)
@@ -155,6 +155,54 @@ const resetPassword = async(req,res)=>{
     }
 }
 
+const userProfile = async (req, res) => {
+    try {
+        const userId = req.session.user
+        const userData = await User.findById(userId)
+        res.render('user/user-profile', { user: userData })
+    } catch (error) {
+        console.log('Error loading user profile', error)
+        res.redirect('/page-error')
+    }
+}
+
+const getAddress = async(res,req)=>{
+    try {
+        const userId = req.session.user
+        const adddressData = await Address.findOne({_id:userId})
+        res.render('user/manage-address',{
+            address:adddressData ? adddressData.address:[]
+        })
+    } catch (error) {
+        console.log('address page not loaded',error)
+        res.redirect('/page-error')
+    }
+}
+
+const addAddress = async(req,res)=>{
+    try {
+        const user = req.session.user
+        const userData = await User.findById({_id:user})
+        const addressData  = await Address.findById({_id:user})
+        const {addressType,name,city,landMark,state,pincode,phone,altphone} = req.body
+        if(!addressData){
+            const newAddress = new Address({
+            address:{addressType,name,city,landMark,state,pincode,phone,altphone}
+            })
+            await newAddress.save()
+        }
+        res.redirect('/user-profile')
+        
+    } catch (error) {
+        console.log('cannot save address page',error)
+        res.redirect('/page-error')
+    }
+}
+
+
+
+
 module.exports = {
-    getForgotPassword, getEmailVal, verifyOtp, getConfirmPassword, resendOtp, resetPassword
+    getForgotPassword, getEmailVal, verifyOtp, getConfirmPassword, resendOtp, resetPassword, userProfile,
+    getAddress,addAddress 
 }

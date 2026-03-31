@@ -1,0 +1,221 @@
+<%- include("../../views/partials/user-header") %>
+
+<style>
+    .profile-card {
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+    .profile-sidebar {
+        background: #f9f9f9;
+        border-right: 1px solid #eee;
+        height: 100%;
+        padding: 40px 25px;
+    }
+    .nav-link-custom {
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+        font-size: 13px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        display: block;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        letter-spacing: 0.5px;
+    }
+    .nav-link-custom:hover {
+        background: #f0f0f0;
+        color: #000;
+        transform: translateX(5px);
+    }
+    .nav-link-custom.active {
+        background: #000;
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .profile-content {
+        padding: 50px;
+    }
+    .section-header {
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 26px;
+        margin-bottom: 35px;
+        letter-spacing: 1px;
+        color: #000;
+        position: relative;
+    }
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 50px;
+        height: 4px;
+        background: #000;
+    }
+    .form-label {
+        font-weight: 800;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #aaa;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 14px 18px;
+        border: 1.5px solid #eee;
+        font-weight: 600;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+        outline: none;
+    }
+    .form-control[readonly] {
+        background-color: #fcfcfc;
+        border-color: #f0f0f0;
+        color: #888;
+    }
+    .btn-save {
+        background: #000;
+        color: #fff;
+        font-weight: 800;
+        text-transform: uppercase;
+        padding: 18px 45px;
+        border-radius: 10px;
+        border: none;
+        letter-spacing: 1.5px;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+    }
+    .btn-save:hover {
+        background: #333;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .avatar-placeholder {
+        width: 100px;
+        height: 100px;
+        background: #000;
+        color: #fff;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        font-weight: 900;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .wallet-card {
+        background: #000;
+        color: #fff;
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 20px;
+    }
+    .wallet-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 800;
+        opacity: 0.6;
+        letter-spacing: 1px;
+    }
+    .wallet-balance {
+        font-size: 24px;
+        font-weight: 900;
+    }
+</style>
+
+<div class="container my-5 pt-4">
+    <div class="profile-card shadow-sm">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="profile-sidebar text-center">
+                    <div class="avatar-placeholder">
+                        <%= user.name.charAt(0).toUpperCase() %>
+                    </div>
+                    <h5 class="fw-bold mb-1"><%= user.name %></h5>
+                    <p class="text-muted small mb-4"><%= user.email %></p>
+                    
+                    <nav class="text-start mt-4">
+                        <a href="/user-profile" class="nav-link-custom active">
+                            <i class="fa-solid fa-user me-2"></i> Profile Overview
+                        </a>
+                        <a href="/my-orders" class="nav-link-custom">
+                            <i class="fa-solid fa-box me-2"></i> My Orders
+                        </a>
+                        <a href="/manage-addresses" class="nav-link-custom">
+                            <i class="fa-solid fa-location-dot me-2"></i> My Addresses
+                        </a>
+                        <a href="/wallet" class="nav-link-custom">
+                            <i class="fa-solid fa-wallet me-2"></i> Wallet
+                        </a>
+                        <a href="/change-password" class="nav-link-custom">
+                            <i class="fa-solid fa-lock me-2"></i> Security
+                        </a>
+                        <a href="/logout" class="nav-link-custom text-danger">
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="col-lg-9">
+                <div class="profile-content">
+                    <h2 class="section-header">Account Details</h2>
+                    
+                    <form id="profileForm">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" name="name" value="<%= user.name %>">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" name="email" value="<%= user.email %>" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" name="phone" value="<%= user.phone || '' %>" placeholder="Add your phone number">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Referral Code</label>
+                                <input type="text" class="form-control" value="<%= user.referalCode || 'XERO-NEW' %>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="wallet-card">
+                                    <div class="wallet-label">Available Balance</div>
+                                    <div class="wallet-balance">
+                                        ₹<%= user.wallet && user.wallet.length > 0 ? user.wallet.reduce((a, b) => a + b, 0) : 0 %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 text-end">
+                            <button type="submit" class="btn-save">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("../../views/partials/user-footer") %>
