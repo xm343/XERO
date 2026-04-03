@@ -312,10 +312,7 @@
     }
 
     function buyNow(productId) {
-        console.log('Buy Now clicked for product:', productId);
-        // Implement buy now logic (e.g., add to cart and redirect to checkout)
-        // For now, we'll just redirect to cart if it existed, or alert
-        alert('Redirecting to checkout for product: ' + productId);
+        location.href = "/checkout?id=" + productId;
     }
 </script>
 

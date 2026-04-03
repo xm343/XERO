@@ -6,6 +6,7 @@ const profileController = require('../controllers/user/profileController')
 const productController = require('../controllers/user/productController')
 const wishlistController = require('../controllers/user/wishlistController')
 const cartController = require('../controllers/user/cartController')
+const orderController = require('../controllers/user/orderController')
 const {userAuth,adminAuth} = require('../middlewares/auth')
 
 router.get('/page-error', userController.errorPage)
@@ -77,5 +78,12 @@ router.get('/cart',userAuth,cartController.getCart)
 router.post('/addToCart',cartController.addToCart)
 router.post('/updateCartQuantity',userAuth,cartController.updateCartQuantity)
 router.post('/removeFromCart',userAuth,cartController.removeFromCart)
+
+// Checkout & Orders
+
+router.get('/checkout', userAuth, orderController.getCheckout)
+router.post('/place-order', userAuth, orderController.placeOrder)
+router.post('/verify-payment', userAuth, orderController.verifyPayment)
+router.get('/order-success', userAuth, orderController.getOrderSuccess)
 
 module.exports = router

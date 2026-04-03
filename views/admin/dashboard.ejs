@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -23,9 +25,44 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             transition: transform 0.3s;
+            height: 100%;
         }
         .stat-card:hover {
             transform: translateY(-5px);
+        }
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        .bg-users { background-color: #e3f2fd; color: #0d47a1; }
+        .bg-orders { background-color: #f3e5f5; color: #4a148c; }
+        .bg-revenue { background-color: #e8f5e9; color: #1b5e20; }
+        .bg-active { background-color: #fff3e0; color: #e65100; }
+        
+        .content-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background-color: #fff;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
         }
     </style>
 </head>
@@ -41,62 +78,196 @@
 
             <!-- Main Content -->
             <main class="col-md-11 col-lg-10 px-md-4 main-content">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2 fw-bold">DASHBOARD</h1>
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                    <h1 class="h2 fw-bold text-uppercase">Statistics Overview</h1>
                 </div>
 
-                <div class="row g-4">
-                    <div class="col-md-4">
+                <!-- Stat Cards -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-3">
                         <div class="card stat-card p-4 bg-white">
                             <div class="d-flex align-items-center">
-                                <div class="bg-light p-3 rounded-3 me-3">
-                                    <i class="fa-solid fa-users fa-2x text-dark"></i>
+                                <div class="icon-box bg-users me-3">
+                                    <i class="fa-solid fa-users fa-xl"></i>
                                 </div>
                                 <div>
-                                    <h6 class="text-muted mb-1">Total Users</h6>
-                                    <h3 class="fw-bold mb-0">1,248</h3>
+                                    <h6 class="text-muted mb-1 small text-uppercase fw-bold">Total Users</h6>
+                                    <h3 class="fw-bold mb-0"><%= totalUsers %></h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card stat-card p-4 bg-white">
                             <div class="d-flex align-items-center">
-                                <div class="bg-light p-3 rounded-3 me-3">
-                                    <i class="fa-solid fa-shopping-cart fa-2x text-dark"></i>
+                                <div class="icon-box bg-orders me-3">
+                                    <i class="fa-solid fa-shopping-bag fa-xl"></i>
                                 </div>
                                 <div>
-                                    <h6 class="text-muted mb-1">Total Orders</h6>
-                                    <h3 class="fw-bold mb-0">356</h3>
+                                    <h6 class="text-muted mb-1 small text-uppercase fw-bold">Total Orders</h6>
+                                    <h3 class="fw-bold mb-0"><%= totalOrders %></h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card stat-card p-4 bg-white">
                             <div class="d-flex align-items-center">
-                                <div class="bg-light p-3 rounded-3 me-3">
-                                    <i class="fa-solid fa-indian-rupee-sign fa-2x text-dark"></i>
+                                <div class="icon-box bg-revenue me-3">
+                                    <i class="fa-solid fa-indian-rupee-sign fa-xl"></i>
                                 </div>
                                 <div>
-                                    <h6 class="text-muted mb-1">Revenue</h6>
-                                    <h3 class="fw-bold mb-0">₹45,280</h3>
+                                    <h6 class="text-muted mb-1 small text-uppercase fw-bold">Total Revenue</h6>
+                                    <h3 class="fw-bold mb-0">₹<%= totalRevenue.toLocaleString() %></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card p-4 bg-white">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-active me-3">
+                                    <i class="fa-solid fa-clock fa-xl"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1 small text-uppercase fw-bold">Active Orders</h6>
+                                    <h3 class="fw-bold mb-0"><%= activeOrders %></h3>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-5">
-                    <div class="card stat-card p-5 text-center bg-white">
-                        <img src="/images/dashboard-bg.png" alt="Welcome" style="max-width: 400px; margin: 0 auto;" class="img-fluid mb-4">
-                        <h2 class="fw-bold">Welcome to XERO Admin Panel</h2>
-                        <p class="text-muted">Manage your users, categories, and products with ease.</p>
+                <!-- Real-time Graphs -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="content-card">
+                            <h5 class="section-title">Sales & Orders Trend (Last 7 Days)</h5>
+                            <div class="chart-container">
+                                <canvas id="salesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <h5 class="section-title">Product Categories</h5>
+                            <div class="chart-container">
+                                <canvas id="categoryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="content-card">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="section-title mb-0">Quick Actions</h5>
+                                <a href="/admin/orders" class="btn btn-dark btn-sm px-3 fw-bold">PROCESS ORDERS</a>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a href="/admin/addProducts" class="btn btn-outline-dark w-100 py-3 fw-bold">
+                                        <i class="fa-solid fa-plus-circle me-2"></i> ADD NEW PRODUCT
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="/admin/category" class="btn btn-outline-dark w-100 py-3 fw-bold">
+                                        <i class="fa-solid fa-list me-2"></i> MANAGE CATEGORIES
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="/admin/banner" class="btn btn-outline-dark w-100 py-3 fw-bold">
+                                        <i class="fa-solid fa-image me-2"></i> UPDATE BANNERS
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>
         </div>
     </div>
+
+    <!-- Chart Scripts -->
+    <script>
+        // Sales and Orders Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: <%- chartLabels %>,
+                datasets: [
+                    {
+                        label: 'Revenue (₹)',
+                        data: <%- revenueChartData %>,
+                        borderColor: '#1b5e20',
+                        backgroundColor: 'rgba(27, 94, 32, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Orders',
+                        data: <%- ordersChartData %>,
+                        borderColor: '#4a148c',
+                        backgroundColor: 'transparent',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: { drawOnChartArea: false }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: <%- categoryNames %>,
+                datasets: [{
+                    data: <%- categoryCounts %>,
+                    backgroundColor: [
+                        '#0d47a1', '#1b5e20', '#e65100', '#4a148c', '#c62828', '#006064'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, padding: 15 }
+                    }
+                }
+            }
+        });
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

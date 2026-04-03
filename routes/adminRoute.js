@@ -6,6 +6,7 @@ const categoryController = require('../controllers/admin/categoryController')
 const brandController = require('../controllers/admin/brandController')
 const productController = require('../controllers/admin/productController')
 const bannerController = require('../controllers/admin/bannerController')
+const orderController = require('../controllers/admin/orderController')
 const multer = require('multer')
 const storage = require('../helpers/multer')
 const uploads = multer({storage:storage})
@@ -61,6 +62,12 @@ router.get('/addBanner',adminAuth,bannerController.getAddBanner)
 router.post('/addBanner',adminAuth,uploads.single('image'),bannerController.addBanner)
 router.get('/deleteBanner',adminAuth,bannerController.deleteBanner)
 
+
+// Order Management
+
+router.get('/orders', adminAuth, orderController.getOrders)
+router.post('/updateOrderStatus', adminAuth, orderController.updateOrderStatus)
+router.get('/orderDetails', adminAuth, orderController.getOrderDetails)
 
 
 module.exports = router
