@@ -19,6 +19,10 @@ const addressSchema = new mongoose.Schema({
             type:String,
             required:true,
         },
+        district:{
+            type:String,
+            required:true,
+        },
         landMark:{
             type:String,
             required:true,

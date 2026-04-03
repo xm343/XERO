@@ -1,0 +1,206 @@
+<%- include("../../views/partials/user-header") %>
+
+<style>
+    .profile-card {
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+    .profile-content {
+        padding: 40px;
+    }
+    .section-header {
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 24px;
+        margin-bottom: 30px;
+        letter-spacing: 1px;
+        color: #000;
+        position: relative;
+    }
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 50px;
+        height: 4px;
+        background: #000;
+    }
+    .form-label {
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #555;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+    }
+    .form-label i {
+        margin-right: 8px;
+        color: #000;
+        width: 16px;
+    }
+    .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        border: 1.5px solid #eee;
+        font-weight: 500;
+        color: #333;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+    .form-control:focus {
+        border-color: #000;
+        background-color: #fff;
+        box-shadow: 0 0 0 4px rgba(0,0,0,0.03);
+        outline: none;
+    }
+    .btn-save {
+        background: #000;
+        color: #fff;
+        font-weight: 800;
+        text-transform: uppercase;
+        padding: 15px 40px;
+        border-radius: 8px;
+        border: none;
+        letter-spacing: 1px;
+        font-size: 13px;
+        transition: all 0.3s ease;
+    }
+    .btn-save:hover {
+        background: #333;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .btn-back {
+        color: #666;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    .btn-back:hover {
+        color: #000;
+        transform: translateX(-5px);
+    }
+    .form-group-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+    }
+</style>
+
+<div class="container my-5 pt-4">
+    <div class="col-lg-8 mx-auto">
+        <div class="mb-4">
+            <a href="/manage-address" class="btn-back">
+                <i class="fa-solid fa-arrow-left me-2"></i> Back to My Addresses
+            </a>
+        </div>
+        
+        <div class="profile-card shadow-sm">
+            <div class="profile-content">
+                <h2 class="section-header">Add New Shipping Address</h2>
+                
+                <form id="addressForm" action="/add-address" method="POST" class="mt-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-tag"></i> Address Type</label>
+                            <input type="text" class="form-control" name="addressType" placeholder="Home, Office, etc." required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-user"></i> Full Name</label>
+                            <input type="text" class="form-control" name="name" placeholder="Enter recipient name" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-city"></i> City</label>
+                            <input type="text" class="form-control" name="city" placeholder="City name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-map-location-dot"></i> District</label>
+                            <input type="text" class="form-control" name="district" placeholder="District name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-map-pin"></i> Landmark</label>
+                            <input type="text" class="form-control" name="landMark" placeholder="Nearby landmark" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-flag"></i> State</label>
+                            <input type="text" class="form-control" name="state" placeholder="State name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-envelope"></i> Pincode</label>
+                            <input type="text" class="form-control" name="pincode" placeholder="6-digit PIN" required pattern="[0-9]{6}">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-phone"></i> Phone Number</label>
+                            <input type="text" class="form-control" name="phone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><i class="fa-solid fa-phone-flip"></i> Alternative Phone</label>
+                            <input type="text" class="form-control" name="altphone" placeholder="Secondary mobile number" required pattern="[0-9]{10}">
+                        </div>
+                    </div>
+
+                    <div class="mt-5 d-flex justify-content-between align-items-center">
+                        <p class="text-muted small mb-0"><i class="fa-solid fa-circle-info me-1"></i> All fields are required</p>
+                        <button type="submit" class="btn-save">
+                            <i class="fa-solid fa-plus me-2"></i> Save Address
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('addressForm').addEventListener('submit', function(e) {
+        const phone = document.getElementsByName('phone')[0].value;
+        const altPhone = document.getElementsByName('altphone')[0].value;
+        const pincode = document.getElementsByName('pincode')[0].value;
+        const name = document.getElementsByName('name')[0].value;
+        const city = document.getElementsByName('city')[0].value;
+
+        let isValid = true;
+        let errorMessage = "";
+
+        if (!/^[0-9]{10}$/.test(phone)) {
+            errorMessage = 'Please enter a valid 10-digit phone number';
+            isValid = false;
+        } else if (!/^[0-9]{10}$/.test(altPhone)) {
+            errorMessage = 'Please enter a valid 10-digit alternative phone number';
+            isValid = false;
+        } else if (!/^[0-9]{6}$/.test(pincode)) {
+            errorMessage = 'Please enter a valid 6-digit pincode';
+            isValid = false;
+        } else if (!/^[A-Za-z\s]+$/.test(name)) {
+            errorMessage = 'Name should only contain letters';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: errorMessage,
+                confirmButtonColor: '#000'
+            });
+            e.preventDefault();
+        }
+    });
+</script>
+
+<%- include("../../views/partials/user-footer") %>

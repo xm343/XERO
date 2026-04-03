@@ -1,4 +1,5 @@
 const User = require('../../models/userSchema')
+const Address = require('../../models/addressSchema')
 const nodemailer = require('nodemailer')
 const env = require('dotenv').config()
 const bcrypt = require('bcrypt')
@@ -166,43 +167,123 @@ const userProfile = async (req, res) => {
     }
 }
 
-const getAddress = async(res,req)=>{
+const getAddress = async (req, res) => {
     try {
         const userId = req.session.user
-        const adddressData = await Address.findOne({_id:userId})
-        res.render('user/manage-address',{
-            address:adddressData ? adddressData.address:[]
+        const addressData = await Address.findOne({ userId: userId })
+        const user = await User.findById(userId)
+        res.render('user/manage-address', {
+            address: addressData ? addressData.address : [],
+            user: user
         })
     } catch (error) {
-        console.log('address page not loaded',error)
+        console.log('address page not loaded', error)
         res.redirect('/page-error')
     }
 }
 
-const addAddress = async(req,res)=>{
+const getAddAddress = async (req, res) => {
     try {
-        const user = req.session.user
-        const userData = await User.findById({_id:user})
-        const addressData  = await Address.findById({_id:user})
-        const {addressType,name,city,landMark,state,pincode,phone,altphone} = req.body
-        if(!addressData){
+        const userId = req.session.user
+        const user = await User.findById(userId)
+        res.render('user/add-address', { user: user })
+    } catch (error) {
+        console.log('add address page not loaded', error)
+        res.redirect('/page-error')
+    }
+}
+
+const addAddress = async (req, res) => {
+    try {
+        const userId = req.session.user
+        const { addressType, name, city, district, landMark, state, pincode, phone, altphone } = req.body
+        const addressData = await Address.findOne({ userId: userId })
+        
+        if (!addressData) {
             const newAddress = new Address({
-            address:{addressType,name,city,landMark,state,pincode,phone,altphone}
+                userId: userId,
+                address: [{ addressType, name, city, district, landMark, state, pincode, phone, altPhone: altphone }]
             })
             await newAddress.save()
+        } else {
+            addressData.address.push({ addressType, name, city, district, landMark, state, pincode, phone, altPhone: altphone })
+            await addressData.save()
         }
-        res.redirect('/user-profile')
-        
+        res.redirect('/manage-address')
+
     } catch (error) {
-        console.log('cannot save address page',error)
+        console.log('cannot save address', error)
         res.redirect('/page-error')
     }
 }
 
 
+const getEditAddress = async (req, res) => {
+    try {
+        const userId = req.session.user
+        const addressId = req.query.id
+        const user = await User.findById(userId)
+        const addressData = await Address.findOne({ userId: userId })
+        const address = addressData.address.find(item => item._id.toString() === addressId)
+        
+        if (!address) {
+            return res.redirect('/manage-address')
+        }
+
+        res.render('user/edit-address', { address: address, user: user })
+
+    } catch (error) {
+        console.log('cannot load edit address', error)
+        res.redirect('/page-error')
+    }
+}
+
+const editAddress = async (req, res) => {
+    try {
+        const userId = req.session.user
+        const addressId = req.query.id
+        const { addressType, name, city, district, landMark, state, pincode, phone, altphone } = req.body
+        
+        await Address.updateOne(
+            { userId: userId, 'address._id': addressId },
+            {
+                $set: {
+                    'address.$.addressType': addressType,
+                    'address.$.name': name,
+                    'address.$.city': city,
+                    'address.$.district': district,
+                    'address.$.landMark': landMark,
+                    'address.$.state': state,
+                    'address.$.pincode': pincode,
+                    'address.$.phone': phone,
+                    'address.$.altPhone': altphone
+                }
+            }
+        )
+        res.redirect('/manage-address')
+    } catch (error) {
+        console.log('Error editing address', error)
+        res.redirect('/page-error')
+    }
+}
+
+const deleteAddress = async (req, res) => {
+    try {
+        const userId = req.session.user
+        const addressId = req.query.id
+        await Address.updateOne(
+            { userId: userId },
+            { $pull: { address: { _id: addressId } } }
+        )
+        res.redirect('/manage-address')
+    } catch (error) {
+        console.log('Error deleting address', error)
+        res.redirect('/page-error')
+    }
+}
 
 
 module.exports = {
     getForgotPassword, getEmailVal, verifyOtp, getConfirmPassword, resendOtp, resetPassword, userProfile,
-    getAddress,addAddress 
+    getAddress, getAddAddress, addAddress, getEditAddress, editAddress, deleteAddress
 }

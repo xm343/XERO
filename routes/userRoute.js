@@ -3,6 +3,9 @@ const passport = require('passport')
 const router = express.Router()
 const userController = require('../controllers/user/userController')
 const profileController = require('../controllers/user/profileController')
+const productController = require('../controllers/user/productController')
+const wishlistController = require('../controllers/user/wishlistController')
+const cartController = require('../controllers/user/cartController')
 const {userAuth,adminAuth} = require('../middlewares/auth')
 
 router.get('/page-error', userController.errorPage)
@@ -15,6 +18,7 @@ router.get('/login', userController.loadLogin)
 router.post('/login', userController.login)
 router.get('/logout', userController.logout)
 router.get('/logout-success', userController.loadLogoutPage)
+router.get('/shop', userController.loadShop)
 router.get('/', userController.loadHomepage)
 
 // Google Auth Routes
@@ -48,7 +52,30 @@ router.post('/resend-otp',profileController.resendOtp)
 router.post('/reset-password',profileController.resetPassword)
 router.get('/user-profile',userAuth,profileController.userProfile)
 router.get('/manage-address',userAuth,profileController.getAddress)
+router.get('/add-address',userAuth,profileController.getAddAddress)
 router.post('/add-address',userAuth,profileController.addAddress)
+router.get('/edit-address',userAuth,profileController.getEditAddress)
+router.post('/edit-address',userAuth,profileController.editAddress)
+router.get('/delete-address',userAuth,profileController.deleteAddress)
 
+
+//product page
+
+router.get('/productDetails',productController.loadProduct)
+
+
+//wishlist
+
+router.get('/wishlist',userAuth,wishlistController.getWishlist)
+router.post('/addToWishlist',wishlistController.addToWishlist)
+router.post('/removeFromWishlist',wishlistController.removeFromWishlist)
+
+
+//cart
+
+router.get('/cart',userAuth,cartController.getCart)
+router.post('/addToCart',cartController.addToCart)
+router.post('/updateCartQuantity',userAuth,cartController.updateCartQuantity)
+router.post('/removeFromCart',userAuth,cartController.removeFromCart)
 
 module.exports = router

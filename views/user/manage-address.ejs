@@ -59,49 +59,75 @@
         height: 4px;
         background: #000;
     }
-    .form-label {
-        font-weight: 800;
-        font-size: 11px;
-        text-transform: uppercase;
-        color: #aaa;
-        margin-bottom: 10px;
-        letter-spacing: 1px;
-    }
-    .form-control {
-        border-radius: 10px;
-        padding: 14px 18px;
+    .address-card {
         border: 1.5px solid #eee;
-        font-weight: 600;
-        color: #333;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    .address-card:hover {
+        border-color: #000;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+    .address-type {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #f0f0f0;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        letter-spacing: 0.5px;
+    }
+    .address-name {
+        font-weight: 800;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    .address-details {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    .address-actions {
+        display: flex;
+        gap: 15px;
+    }
+    .btn-action {
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        text-decoration: none;
+        letter-spacing: 1px;
         transition: all 0.3s ease;
     }
-    .form-control:focus {
-        border-color: #000;
-        box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
-        outline: none;
+    .btn-edit {
+        color: #000;
     }
-    .form-control[readonly] {
-        background-color: #fcfcfc;
-        border-color: #f0f0f0;
-        color: #888;
+    .btn-delete {
+        color: #dc3545;
     }
-    .btn-save {
+    .btn-add-address {
         background: #000;
         color: #fff;
         font-weight: 800;
         text-transform: uppercase;
-        padding: 18px 45px;
+        padding: 15px 30px;
         border-radius: 10px;
-        border: none;
-        letter-spacing: 1.5px;
-        font-size: 13px;
+        text-decoration: none;
+        display: inline-block;
+        letter-spacing: 1px;
+        font-size: 12px;
         transition: all 0.3s ease;
-        margin-top: 20px;
     }
-    .btn-save:hover {
+    .btn-add-address:hover {
         background: #333;
+        color: #fff;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     .avatar-placeholder {
         width: 100px;
@@ -116,24 +142,6 @@
         font-weight: 900;
         margin: 0 auto 20px;
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-    .wallet-card {
-        background: #000;
-        color: #fff;
-        padding: 20px;
-        border-radius: 15px;
-        margin-top: 20px;
-    }
-    .wallet-label {
-        font-size: 10px;
-        text-transform: uppercase;
-        font-weight: 800;
-        opacity: 0.6;
-        letter-spacing: 1px;
-    }
-    .wallet-balance {
-        font-size: 24px;
-        font-weight: 900;
     }
 </style>
 
@@ -150,15 +158,16 @@
                     <p class="text-muted small mb-4"><%= user.email %></p>
                     
                     <nav class="text-start mt-4">
-                        <a href="/user-profile" class="nav-link-custom active">
+                        <a href="/user-profile" class="nav-link-custom">
                             <i class="fa-solid fa-user me-2"></i> Profile Overview
                         </a>
                         <a href="/my-orders" class="nav-link-custom">
                             <i class="fa-solid fa-box me-2"></i> My Orders
                         </a>
-                        <a href="/manage-address" class="nav-link-custom">
+                        <a href="/manage-address" class="nav-link-custom active">
                             <i class="fa-solid fa-location-dot me-2"></i> My Addresses
-                        </a>                        <a href="/wallet" class="nav-link-custom">
+                        </a>
+                        <a href="/wallet" class="nav-link-custom">
                             <i class="fa-solid fa-wallet me-2"></i> Wallet
                         </a>
                         <a href="/change-password" class="nav-link-custom">
@@ -174,43 +183,38 @@
             <!-- Content -->
             <div class="col-lg-9">
                 <div class="profile-content">
-                    <h2 class="section-header">Account Details</h2>
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <h2 class="section-header mb-0">My Addresses</h2>
+                        <a href="/add-address" class="btn-add-address">Add New Address</a>
+                    </div>
                     
-                    <form id="profileForm">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" class="form-control" name="name" value="<%= user.name %>">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" class="form-control" name="email" value="<%= user.email %>" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phone Number</label>
-                                <input type="text" class="form-control" name="phone" value="<%= user.phone || '' %>" placeholder="Add your phone number">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Referral Code</label>
-                                <input type="text" class="form-control" value="<%= user.referalCode || 'XERO-NEW' %>" readonly>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <div class="wallet-card">
-                                    <div class="wallet-label">Available Balance</div>
-                                    <div class="wallet-balance">
-                                        ₹<%= user.wallet && user.wallet.length > 0 ? user.wallet.reduce((a, b) => a + b, 0) : 0 %>
+                    <div class="row">
+                        <% if (address && address.length > 0) { %>
+                            <% address.forEach(item => { %>
+                                <div class="col-md-6">
+                                    <div class="address-card">
+                                        <div class="address-type"><%= item.addressType %></div>
+                                        <div class="address-name"><%= item.name %></div>
+                                        <div class="address-details">
+                                            <%= item.landMark %>, <%= item.city %>, <%= item.district %><br>
+                                            <%= item.state %> - <%= item.pincode %><br>
+                                            Phone: <%= item.phone %><br>
+                                            Alt: <%= item.altPhone %>
+                                        </div>
+                                        <div class="address-actions">
+                                            <a href="/edit-address?id=<%= item._id %>" class="btn-action btn-edit">Edit</a>
+                                            <a href="/delete-address?id=<%= item._id %>" class="btn-action btn-delete" onclick="return confirm('Are you sure you want to delete this address?')">Delete</a>
+                                        </div>
                                     </div>
                                 </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div class="col-12 text-center py-5">
+                                <i class="fa-solid fa-map-location-dot fa-3x text-light mb-3"></i>
+                                <p class="text-muted">No addresses saved yet.</p>
                             </div>
-                        </div>
-                        
-                        <div class="mt-5 text-end">
-                            <button type="submit" class="btn-save">Update Profile</button>
-                        </div>
-                    </form>
+                        <% } %>
+                    </div>
                 </div>
             </div>
         </div>

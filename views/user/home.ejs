@@ -138,9 +138,14 @@
                     justify-content: center;
                     border: none;
                     transition: all 0.2s ease;
+                    color: #000;
                 }
                 .action-btn:hover {
                     background: #000;
+                    color: #fff;
+                }
+                .action-btn i {
+                    font-size: 18px;
                 }
                 .action-btn img {
                     width: 18px !important;
@@ -178,8 +183,8 @@
 
                             <!-- Right: Icons -->
                             <div class="product-info-right">
-                                <button class="action-btn" onclick="addToWishlist('<%= product._id %>')" title="Wishlist">
-                                    <img src="/images/FAVORITES.png" alt="Wishlist">
+                                <button class="action-btn" onclick="addToWishlist('<%= product._id %>', this)" title="Wishlist">
+                                    <i class="fa-regular fa-heart"></i>
                                 </button>
                                 <button class="action-btn" onclick="addToCart('<%= product._id %>')" title="Add to Cart">
                                     <img src="/images/add-to-cart-icon.png" alt="Add to Cart">

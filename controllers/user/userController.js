@@ -1,6 +1,7 @@
 const User = require('../../models/userSchema')
 const Category = require('../../models/categorySchema')
 const Product = require('../../models/productSchema')
+const Brand = require('../../models/brandSchema')
 const Banner = require('../../models/bannerSchema')
 const nodemailer = require('nodemailer')
 const env = require('dotenv').config()
@@ -236,6 +237,89 @@ const errorPage = async (req,res) => {
     }
 }
 
+const loadShop = async (req, res) => {
+    try {
+        const user = req.session.user;
+        const userData = user ? await User.findOne({ _id: user }) : null;
+        const categories = await Category.find({ isListed: true });
+        const brands = await Brand.find({ isBlocked: false });
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = 9;
+        const skip = (page - 1) * limit;
+
+        const categoryId = req.query.category || null;
+        const brandId = req.query.brand || null;
+        const search = req.query.search || "";
+        const sort = req.query.sort || "newest";
+        const minPrice = parseInt(req.query.minPrice) || 0;
+        const maxPrice = parseInt(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
+
+        let query = {
+            isBlocked: false,
+            quantity: { $gt: 0 },
+            salesPrice: { $gte: minPrice, $lte: maxPrice }
+        };
+
+        if (categoryId) {
+            query.category = categoryId;
+        }
+
+        if (brandId) {
+            const brand = await Brand.findById(brandId);
+            if (brand) {
+                query.brand = brand.brandName;
+            }
+        }
+
+        if (search) {
+            query.productName = { $regex: search, $options: "i" };
+        }
+
+        let sortQuery = {};
+        if (sort === "newest") {
+            sortQuery = { createdAt: -1 };
+        } else if (sort === "priceLow") {
+            sortQuery = { salesPrice: 1 };
+        } else if (sort === "priceHigh") {
+            sortQuery = { salesPrice: -1 };
+        } else if (sort === "a-z") {
+            sortQuery = { productName: 1 };
+        } else if (sort === "z-a") {
+            sortQuery = { productName: -1 };
+        }
+
+        const products = await Product.find(query)
+            .sort(sortQuery)
+            .skip(skip)
+            .limit(limit)
+            .populate('category');
+
+        const totalProducts = await Product.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        res.render("user/shop", {
+            user: userData,
+            products: products,
+            categories: categories,
+            brands: brands,
+            totalPages: totalPages,
+            currentPage: page,
+            selectedCategory: categoryId,
+            selectedBrand: brandId,
+            sort: sort,
+            search: search,
+            minPrice: minPrice,
+            maxPrice: maxPrice,
+            query: req.query
+        });
+
+    } catch (error) {
+        console.log("Error loading shop page", error);
+        res.redirect("/page-error");
+    }
+};
+
 module.exports = {
-    loadSignup, signup, verifyOtp, resendOtp, loadLogin, login, loadHomepage, logout, loadLogoutPage, errorPage
+    loadSignup, signup, verifyOtp, resendOtp, loadLogin, login, loadHomepage, logout, loadLogoutPage, errorPage, loadShop
 }

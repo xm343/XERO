@@ -30,8 +30,8 @@ const cartSchema = new mongoose.Schema({
             default:'Placed'
         },
         cancellationReason:{
-            type:'String',
-            default:none
+            type:String,
+            default:'none'
         }
     }]
 })

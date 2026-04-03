@@ -1,0 +1,404 @@
+<%- include("../../views/partials/user-header") %>
+
+<style>
+    .shop-container {
+        padding-top: 50px;
+        padding-bottom: 80px;
+    }
+    .filter-sidebar {
+        background: #fff;
+        padding: 30px;
+        border: 1px solid #f0f0f0;
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+    .filter-title {
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+        color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .filter-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .filter-item {
+        margin-bottom: 12px;
+    }
+    .filter-link {
+        color: #666;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: block;
+    }
+    .filter-link:hover, .filter-link.active {
+        color: #000;
+        transform: translateX(5px);
+    }
+    
+    /* Product Card Styling (Matched with Home Page) */
+    .product-card {
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .product-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        transform: translateY(-5px);
+    }
+    .product-img-container {
+        background-color: #f9f9f9;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+    }
+    .product-img-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    .product-info-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 20px;
+    }
+    .product-info-left {
+        flex: 1;
+        min-width: 0;
+        padding-right: 10px;
+    }
+    .product-brand {
+        font-size: 11px;
+        font-weight: 700;
+        color: #999;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .product-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #111;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .product-price {
+        font-size: 16px;
+        font-weight: 800;
+    }
+    .old-price {
+        color: #bbb;
+        text-decoration: line-through;
+        font-size: 13px;
+        margin-right: 8px;
+        font-weight: 500;
+    }
+    .product-info-right {
+        display: flex;
+        gap: 10px;
+    }
+    .action-btn {
+        width: 35px;
+        height: 35px;
+        background: #f4f4f4;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: all 0.2s ease;
+        color: #000;
+    }
+    .action-btn:hover {
+        background: #000;
+        color: #fff;
+    }
+    .action-btn i {
+        font-size: 16px;
+    }
+    .action-btn img {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    .action-btn:hover img {
+        filter: invert(1);
+    }
+    
+    .shop-header {
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 20px;
+    }
+    .sort-select {
+        border: 1px solid #eee;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #000;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .sort-select:focus {
+        border-color: #000;
+    }
+    .pagination {
+        margin-top: 50px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .page-link-custom {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid #eee;
+        border-radius: 50%;
+        color: #000;
+        text-decoration: none;
+        font-weight: 800;
+        transition: all 0.3s ease;
+    }
+    .page-link-custom:hover, .page-link-custom.active {
+        background: #000;
+        color: #fff;
+        border-color: #000;
+    }
+    .search-bar {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    .search-input {
+        width: 100%;
+        padding: 12px 50px 12px 20px;
+        border: 1.5px solid #eee;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .search-input:focus {
+        border-color: #000;
+        outline: none;
+    }
+    .search-btn {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: none;
+        color: #aaa;
+    }
+    .price-filter {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .price-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+    .btn-apply-price {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-top: 10px;
+        width: 100%;
+    }
+</style>
+
+<% 
+    function getUrl(params) {
+        let currentQuery = { ...query };
+        Object.keys(params).forEach(key => {
+            if (params[key] === '' || params[key] === null) {
+                delete currentQuery[key];
+            } else {
+                currentQuery[key] = params[key];
+            }
+        });
+        return '/shop?' + new URLSearchParams(currentQuery).toString();
+    }
+%>
+
+<div class="container shop-container">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="search-bar">
+                <form action="/shop" method="GET">
+                    <input type="text" name="search" class="search-input" placeholder="Search products..." value="<%= search %>">
+                    <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <% if(selectedCategory) { %><input type="hidden" name="category" value="<%= selectedCategory %>"><% } %>
+                    <% if(selectedBrand) { %><input type="hidden" name="brand" value="<%= selectedBrand %>"><% } %>
+                    <input type="hidden" name="sort" value="<%= sort %>">
+                </form>
+            </div>
+
+            <div class="filter-sidebar">
+                <div class="filter-title">
+                    <span>Categories</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <ul class="filter-list">
+                    <li class="filter-item">
+                        <a href="<%= getUrl({category: '', page: 1}) %>" class="filter-link <%= !selectedCategory ? 'active' : '' %>">All Categories</a>
+                    </li>
+                    <% categories.forEach(cat => { %>
+                        <li class="filter-item">
+                            <a href="<%= getUrl({category: cat._id, page: 1}) %>" class="filter-link <%= selectedCategory == cat._id.toString() ? 'active' : '' %>"><%= cat.name %></a>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <div class="filter-sidebar">
+                <div class="filter-title">
+                    <span>Brands</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <ul class="filter-list">
+                    <li class="filter-item">
+                        <a href="<%= getUrl({brand: '', page: 1}) %>" class="filter-link <%= !selectedBrand ? 'active' : '' %>">All Brands</a>
+                    </li>
+                    <% brands.forEach(brand => { %>
+                        <li class="filter-item">
+                            <a href="<%= getUrl({brand: brand._id, page: 1}) %>" class="filter-link <%= selectedBrand == brand._id.toString() ? 'active' : '' %>"><%= brand.brandName %></a>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <div class="filter-sidebar">
+                <div class="filter-title">
+                    <span>Price Range</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <form action="/shop" method="GET">
+                    <% if(selectedCategory) { %><input type="hidden" name="category" value="<%= selectedCategory %>"><% } %>
+                    <% if(selectedBrand) { %><input type="hidden" name="brand" value="<%= selectedBrand %>"><% } %>
+                    <input type="hidden" name="sort" value="<%= sort %>">
+                    <input type="hidden" name="search" value="<%= search %>">
+                    <div class="price-filter">
+                        <input type="number" name="minPrice" class="price-input" placeholder="Min" value="<%= minPrice > 0 ? minPrice : '' %>">
+                        <input type="number" name="maxPrice" class="price-input" placeholder="Max" value="<%= maxPrice < 999999 ? maxPrice : '' %>">
+                    </div>
+                    <button type="submit" class="btn-apply-price">Apply Filter</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <div class="shop-header">
+                <div>
+                    <h5 class="fw-bold mb-0">Products Found: <span class="text-muted"><%= products.length %></span></h5>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="me-3 small fw-bold text-muted text-uppercase">Sort By:</span>
+                    <select class="sort-select" onchange="location = this.value;">
+                        <option value="<%= getUrl({sort: 'newest', page: 1}) %>" <%= sort === 'newest' ? 'selected' : '' %>>Newest Arrivals</option>
+                        <option value="<%= getUrl({sort: 'priceLow', page: 1}) %>" <%= sort === 'priceLow' ? 'selected' : '' %>>Price: Low to High</option>
+                        <option value="<%= getUrl({sort: 'priceHigh', page: 1}) %>" <%= sort === 'priceHigh' ? 'selected' : '' %>>Price: High to Low</option>
+                        <option value="<%= getUrl({sort: 'a-z', page: 1}) %>" <%= sort === 'a-z' ? 'selected' : '' %>>Name: A - Z</option>
+                        <option value="<%= getUrl({sort: 'z-a', page: 1}) %>" <%= sort === 'z-a' ? 'selected' : '' %>>Name: Z - A</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <% if(products.length > 0) { %>
+                    <% products.forEach(product => { %>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="product-card">
+                                <div class="product-img-container">
+                                    <a href="/productDetails?id=<%= product._id %>">
+                                        <img src="/uploads/re-image/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+                                    </a>
+                                </div>
+                                
+                                <div class="product-info-wrap">
+                                    <div class="product-info-left">
+                                        <div class="product-brand"><%= product.brand %></div>
+                                        <a href="/productDetails?id=<%= product._id %>" class="product-name"><%= product.productName %></a>
+                                        <div class="product-price">
+                                            <% if (product.salesPrice < product.regularPrice) { %>
+                                                <span class="old-price">₹<%= product.regularPrice %></span>
+                                            <% } %>
+                                            ₹<%= product.salesPrice %>
+                                        </div>
+                                    </div>
+
+                                    <div class="product-info-right">
+                                        <button class="action-btn" onclick="addToWishlist('<%= product._id %>', this)" title="Wishlist">
+                                            <i class="fa-regular fa-heart"></i>
+                                        </button>
+                                        <button class="action-btn" onclick="addToCart('<%= product._id %>')" title="Add to Cart">
+                                            <img src="/images/add-to-cart-icon.png" alt="Add to Cart">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-12 text-center py-5">
+                        <i class="fa-solid fa-box-open fa-3x text-light mb-3"></i>
+                        <h4 class="text-muted fw-bold">No products found</h4>
+                        <p class="text-muted">Try adjusting your filters or search query</p>
+                        <a href="/shop" class="btn btn-dark mt-3 px-4 py-2 fw-bold text-uppercase">Clear All Filters</a>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Pagination -->
+            <% if (totalPages > 1) { %>
+                <div class="pagination">
+                    <% for(let i=1; i<=totalPages; i++) { %>
+                        <a href="<%= getUrl({page: i}) %>" 
+                           class="page-link-custom <%= currentPage === i ? 'active' : '' %>">
+                           <%= i %>
+                        </a>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include("../../views/partials/user-footer") %>

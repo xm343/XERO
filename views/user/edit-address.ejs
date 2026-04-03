@@ -1,0 +1,146 @@
+<%- include("../../views/partials/user-header") %>
+
+<style>
+    .profile-card {
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+    .profile-content {
+        padding: 50px;
+    }
+    .section-header {
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 26px;
+        margin-bottom: 35px;
+        letter-spacing: 1px;
+        color: #000;
+        position: relative;
+    }
+    .section-header::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 50px;
+        height: 4px;
+        background: #000;
+    }
+    .form-label {
+        font-weight: 800;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #aaa;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 14px 18px;
+        border: 1.5px solid #eee;
+        font-weight: 600;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+        outline: none;
+    }
+    .btn-save {
+        background: #000;
+        color: #fff;
+        font-weight: 800;
+        text-transform: uppercase;
+        padding: 18px 45px;
+        border-radius: 10px;
+        border: none;
+        letter-spacing: 1.5px;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+    }
+    .btn-save:hover {
+        background: #333;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+</style>
+
+<div class="container my-5 pt-4">
+    <div class="profile-card shadow-sm col-lg-8 mx-auto">
+        <div class="profile-content">
+            <h2 class="section-header">Edit Address</h2>
+            
+            <form id="addressForm" action="/edit-address?id=<%= address._id %>" method="POST">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Address Type</label>
+                        <input type="text" class="form-control" name="addressType" value="<%= address.addressType %>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="name" value="<%= address.name %>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-control" name="city" value="<%= address.city %>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">District</label>
+                        <input type="text" class="form-control" name="district" value="<%= address.district %>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Landmark</label>
+                        <input type="text" class="form-control" name="landMark" value="<%= address.landMark %>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">State</label>
+                        <input type="text" class="form-control" name="state" value="<%= address.state %>" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Pincode</label>
+                        <input type="text" class="form-control" name="pincode" value="<%= address.pincode %>" required pattern="[0-9]{6}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" name="phone" value="<%= address.phone %>" required pattern="[0-9]{10}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Alternative Phone</label>
+                        <input type="text" class="form-control" name="altphone" value="<%= address.altPhone %>" required pattern="[0-9]{10}">
+                    </div>
+                </div>
+
+                <div class="mt-5 text-end">
+                    <button type="submit" class="btn-save">Update Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('addressForm').addEventListener('submit', function(e) {
+        const phone = document.getElementsByName('phone')[0].value;
+        const altPhone = document.getElementsByName('altphone')[0].value;
+        const pincode = document.getElementsByName('pincode')[0].value;
+
+        if (!/^[0-9]{10}$/.test(phone)) {
+            alert('Please enter a valid 10-digit phone number');
+            e.preventDefault();
+        } else if (!/^[0-9]{10}$/.test(altPhone)) {
+            alert('Please enter a valid 10-digit alternative phone number');
+            e.preventDefault();
+        } else if (!/^[0-9]{6}$/.test(pincode)) {
+            alert('Please enter a valid 6-digit pincode');
+            e.preventDefault();
+        }
+    });
+</script>
+
+<%- include("../../views/partials/user-header") %>
