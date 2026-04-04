@@ -126,6 +126,9 @@
                                                         <option value="Return" <%= order.status === 'Return' ? 'selected' : '' %>>Return</option>
                                                     </select>
                                                     <a href="/admin/orderDetails?id=<%= order.orderId %>" class="btn btn-dark btn-sm px-3">Details</a>
+                                                    <button onclick="deleteOrder('<%= order.orderId %>')" class="btn btn-danger btn-sm">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -195,6 +198,42 @@
                     }
                 } else {
                     location.reload(); // Reset dropdown if cancelled
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Something went wrong', 'error');
+            }
+        }
+
+        async function deleteOrder(orderId) {
+            try {
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                });
+
+                if (result.isConfirmed) {
+                    const response = await fetch(`/admin/deleteOrder?id=${orderId}`, {
+                        method: 'GET'
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Order has been deleted.',
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', data.message || 'Failed to delete order', 'error');
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);

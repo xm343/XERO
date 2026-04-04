@@ -31,6 +31,7 @@ router.get('/editCategory',adminAuth,categoryController.getListCategory)
 router.post('/editCategory',adminAuth,categoryController.updateCategory)
 router.get('/listCategory',adminAuth,categoryController.listCategory)
 router.get('/unlistCategory',adminAuth,categoryController.unlistCategory)
+router.get('/deleteCategory',adminAuth,categoryController.deleteCategory)
 
 
 //Brand management
@@ -68,6 +69,7 @@ router.get('/deleteBanner',adminAuth,bannerController.deleteBanner)
 router.get('/orders', adminAuth, orderController.getOrders)
 router.post('/updateOrderStatus', adminAuth, orderController.updateOrderStatus)
 router.get('/orderDetails', adminAuth, orderController.getOrderDetails)
+router.get('/deleteOrder', adminAuth, orderController.deleteOrder)
 
 
 module.exports = router

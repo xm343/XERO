@@ -136,6 +136,9 @@
                                                         <button onclick="toggleListing('<%= category._id %>', 'list')" class="btn btn-success btn-sm btn-action" style="width: 80px;">List</button>
                                                     <% } %>
                                                     <button onclick="showEditCategoryModal('<%= category._id %>')" class="btn btn-dark btn-sm btn-action" style="width: 60px;">Edit</button>
+                                                    <button onclick="deleteCategory('<%= category._id %>')" class="btn btn-danger btn-sm btn-action" style="width: 40px;">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -190,7 +193,7 @@
                 preConfirm: () => {
                     const name = document.getElementById('swal-name').value.trim();
                     const description = document.getElementById('swal-description').value.trim();
-                    
+
                     if (!name) {
                         Swal.showValidationMessage('Category name is required');
                         return false;
@@ -199,7 +202,7 @@
                         Swal.showValidationMessage('Description is required');
                         return false;
                     }
-                    
+
                     return { name, description };
                 }
             });
@@ -266,7 +269,7 @@
                 preConfirm: () => {
                     const name = document.getElementById('swal-edit-name').value.trim();
                     const description = document.getElementById('swal-edit-description').value.trim();
-                    
+
                     if (!name) {
                         Swal.showValidationMessage('Category name is required');
                         return false;
@@ -275,7 +278,7 @@
                         Swal.showValidationMessage('Description is required');
                         return false;
                     }
-                    
+
                     return { id, name, description };
                 }
             });
@@ -323,7 +326,7 @@
 
         async function toggleListing(id, action) {
             const url = action === 'list' ? `/admin/listCategory?id=${id}` : `/admin/unlistCategory?id=${id}`;
-            
+
             try {
                 const response = await fetch(url, { method: 'GET' });
                 const data = await response.json();
@@ -338,12 +341,18 @@
                         actionCell.innerHTML = `
                             <button onclick="toggleListing('${id}', 'unlist')" class="btn btn-danger btn-sm btn-action" style="width: 80px;">Unlist</button>
                             <button onclick="showEditCategoryModal('${id}')" class="btn btn-dark btn-sm btn-action" style="width: 60px;">Edit</button>
+                            <button onclick="deleteCategory('${id}')" class="btn btn-danger btn-sm btn-action" style="width: 40px;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         `;
                     } else {
                         statusCell.innerHTML = '<span class="status-badge bg-danger-subtle text-danger">Unlisted</span>';
                         actionCell.innerHTML = `
                             <button onclick="toggleListing('${id}', 'list')" class="btn btn-success btn-sm btn-action" style="width: 80px;">List</button>
                             <button onclick="showEditCategoryModal('${id}')" class="btn btn-dark btn-sm btn-action" style="width: 60px;">Edit</button>
+                            <button onclick="deleteCategory('${id}')" class="btn btn-danger btn-sm btn-action" style="width: 40px;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         `;
                     }
 
@@ -367,6 +376,42 @@
                     title: 'Error',
                     text: 'Failed to update category status'
                 });
+            }
+        }
+
+        async function deleteCategory(id) {
+            try {
+                const result = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                });
+
+                if (result.isConfirmed) {
+                    const response = await fetch(`/admin/deleteCategory?id=${id}`, {
+                        method: 'GET'
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Category has been deleted.',
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', data.message || 'Failed to delete category', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Something went wrong', 'error');
             }
         }
     </script>

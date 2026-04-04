@@ -117,11 +117,22 @@ const unlistCategory = async (req, res) => {
     }
 };
 
+const deleteCategory = async (req, res) => {
+    try {
+        let id = req.query.id;
+        await Category.findByIdAndDelete(id);
+        res.status(200).json({ success: true, message: 'Category deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     categoryInfo,
     addCategory,
     getListCategory,
     updateCategory,
     listCategory,
-    unlistCategory
+    unlistCategory,
+    deleteCategory
 }

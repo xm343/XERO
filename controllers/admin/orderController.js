@@ -57,8 +57,20 @@ const getOrderDetails = async (req, res) => {
     }
 };
 
+const deleteOrder = async (req, res) => {
+    try {
+        const orderId = req.query.id;
+        await Order.findOneAndDelete({ orderId: orderId });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting order:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
 module.exports = {
     getOrders,
     updateOrderStatus,
-    getOrderDetails
+    getOrderDetails,
+    deleteOrder
 };
