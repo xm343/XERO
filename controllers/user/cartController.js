@@ -34,6 +34,10 @@ const addToCart = async (req, res) => {
             return res.json({ status: false, message: 'Please login to add to cart' });
         }
 
+        if (!quantity || quantity < 1) {
+            return res.json({ status: false, message: 'Quantity must be at least 1' });
+        }
+
         const product = await Product.findById(productId);
         if (!product) {
             return res.json({ status: false, message: 'Product not found' });
@@ -41,6 +45,10 @@ const addToCart = async (req, res) => {
 
         if (product.quantity < quantity) {
             return res.json({ status: false, message: 'Insufficient stock' });
+        }
+
+        if (quantity > 5) {
+            return res.json({ status: false, message: 'Maximum 5 items allowed per product' });
         }
 
         let cart = await Cart.findOne({ userId: userId });
@@ -58,6 +66,9 @@ const addToCart = async (req, res) => {
         } else {
             const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
             if (itemIndex > -1) {
+                if (cart.items[itemIndex].quantity + quantity > 5) {
+                    return res.json({ status: false, message: 'Maximum 5 items allowed per product' });
+                }
                 cart.items[itemIndex].quantity += quantity;
                 cart.items[itemIndex].totalPrice = cart.items[itemIndex].quantity * product.salesPrice;
             } else {
@@ -94,6 +105,7 @@ const updateCartQuantity = async (req, res) => {
         const newQuantity = cart.items[itemIndex].quantity + change;
 
         if (newQuantity < 1) return res.json({ status: false, message: 'Quantity cannot be less than 1' });
+        if (newQuantity > 5) return res.json({ status: false, message: 'Maximum 5 items allowed per product' });
         if (newQuantity > product.quantity) return res.json({ status: false, message: 'Insufficient stock' });
 
         cart.items[itemIndex].quantity = newQuantity;

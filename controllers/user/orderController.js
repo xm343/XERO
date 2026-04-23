@@ -268,6 +268,24 @@ const verifyPayment = async (req, res) => {
     }
 };
 
+const handlePaymentFailed = async (req, res) => {
+    try {
+        const { orderId, reason } = req.body;
+        console.log(`Payment Failed for order ${orderId}. Reason: ${reason}`);
+
+        const order = await Order.findOne({ orderId: orderId });
+        if (order) {
+            order.status = 'Payment Failed';
+            await order.save();
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error in handlePaymentFailed:', error);
+        res.status(500).json({ success: false });
+    }
+};
+
 const getOrderSuccess = async (req, res) => {
     try {
         const userId = req.session.user;
@@ -285,9 +303,83 @@ const getOrderSuccess = async (req, res) => {
     }
 };
 
+const cancelOrder = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        const userId = req.session.user;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, message: 'User not authenticated' });
+        }
+
+        const order = await Order.findOne({ orderId: orderId });
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (['Shipped', 'Delivered', 'Cancel', 'Returned'].includes(order.status)) {
+            return res.status(400).json({ success: false, message: `Order cannot be cancelled. Current status: ${order.status}` });
+        }
+
+        // Restore stock
+        for (const item of order.orderedItems) {
+            await Product.updateOne(
+                { _id: item.product },
+                { $inc: { quantity: item.quantity } }
+            );
+        }
+
+        order.status = 'Cancel';
+        await order.save();
+
+        res.json({ success: true, message: 'Order cancelled successfully' });
+
+    } catch (error) {
+        console.error('Error cancelling order:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+const retryPayment = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        const order = await Order.findOne({ orderId: orderId });
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (!razorpayInstance) {
+            return res.status(500).json({ success: false, message: 'Razorpay configuration error' });
+        }
+
+        const options = {
+            amount: Math.round(order.finalAmount * 100),
+            currency: "INR",
+            receipt: order.orderId
+        };
+
+        const razorpayOrder = await razorpayInstance.orders.create(options);
+
+        res.json({
+            success: true,
+            razorpayOrder: razorpayOrder,
+            orderId: order.orderId
+        });
+
+    } catch (error) {
+        console.error('Error in retryPayment:', error);
+        res.status(500).json({ success: false, message: 'Failed to initiate retry payment' });
+    }
+};
+
 module.exports = {
     getCheckout,
     placeOrder,
     getOrderSuccess,
-    verifyPayment
+    verifyPayment,
+    handlePaymentFailed,
+    retryPayment,
+    cancelOrder
 };

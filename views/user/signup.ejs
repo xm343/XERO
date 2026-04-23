@@ -33,6 +33,12 @@
 
             <div class="divider"></div>
 
+            <% if (locals.message) { %>
+                <div class="alert alert-danger" style="font-size: 0.9rem; padding: 10px; border-radius: 8px;">
+                    <%= message %>
+                </div>
+            <% } %>
+
             <form id="signform" action="/signup" method="POST" novalidate>
                 <div id="error-name" class="error-message"></div>
                 <div class="form-group">

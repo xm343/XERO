@@ -372,7 +372,7 @@
 
     function payWithRazorpay(orderData) {
         const options = {
-            "key": "<%= razorpayKey %>",
+            "key": "<%= locals.razorpayKey || '' %>",
             "amount": orderData.razorpayOrder.amount,
             "currency": "INR",
             "name": "XERO Apparel",
@@ -380,6 +380,11 @@
             "order_id": orderData.razorpayOrder.id,
             "handler": function (response) {
                 verifyPayment(response, orderData.orderId);
+            },
+            "modal": {
+                "ondismiss": function() {
+                    handlePaymentFailure(orderData.orderId, 'Payment cancelled by user');
+                }
             },
             "prefill": {
                 "name": "<%= user.name %>",
@@ -391,8 +396,34 @@
             }
         };
         const rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response){
+            handlePaymentFailure(orderData.orderId, response.error.description);
+        });
         rzp1.open();
         Swal.close();
+    }
+
+    async function handlePaymentFailure(orderId, reason) {
+        try {
+            await fetch('/payment-failed', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, reason })
+            });
+            
+            Swal.fire({
+                title: 'Payment Failed',
+                text: reason || 'Your payment could not be processed. You can retry from your orders page.',
+                icon: 'error',
+                confirmButtonText: 'View Orders',
+                confirmButtonColor: '#000'
+            }).then(() => {
+                window.location.href = '/my-orders';
+            });
+        } catch (error) {
+            console.error('Error handling payment failure:', error);
+            window.location.href = '/my-orders';
+        }
     }
 
     async function verifyPayment(razorpayResponse, orderId) {

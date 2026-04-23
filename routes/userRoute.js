@@ -23,7 +23,16 @@ router.get('/shop', userController.loadShop)
 router.get('/', userController.loadHomepage)
 
 // Google Auth Routes
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/auth/google', (req, res, next) => {
+    if (req.query.returnTo) {
+        req.session.returnTo = req.query.returnTo;
+        req.session.save(() => {
+            passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+        });
+    } else {
+        passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+    }
+});
 
 router.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
@@ -37,7 +46,14 @@ router.get('/auth/google/callback',
         });
     } else {
         req.session.user = req.user._id;
-        res.redirect('/');
+        const redirectTo = req.session.returnTo || '/';
+        delete req.session.returnTo;
+        req.session.save((err) => {
+            if (err) {
+                console.error("Session save error:", err);
+            }
+            res.redirect(redirectTo);
+        });
     }
   }
 );
@@ -52,6 +68,7 @@ router.get('/reset-password',profileController.getConfirmPassword)
 router.post('/resend-otp',profileController.resendOtp)
 router.post('/reset-password',profileController.resetPassword)
 router.get('/user-profile',userAuth,profileController.userProfile)
+router.get('/my-orders',userAuth,profileController.getOrders)
 router.get('/manage-address',userAuth,profileController.getAddress)
 router.get('/add-address',userAuth,profileController.getAddAddress)
 router.post('/add-address',userAuth,profileController.addAddress)
@@ -84,6 +101,9 @@ router.post('/removeFromCart',userAuth,cartController.removeFromCart)
 router.get('/checkout', userAuth, orderController.getCheckout)
 router.post('/place-order', userAuth, orderController.placeOrder)
 router.post('/verify-payment', userAuth, orderController.verifyPayment)
+router.post('/payment-failed', userAuth, orderController.handlePaymentFailed)
+router.post('/retry-payment', userAuth, orderController.retryPayment)
 router.get('/order-success', userAuth, orderController.getOrderSuccess)
+router.post('/cancel-order', userAuth, orderController.cancelOrder)
 
 module.exports = router

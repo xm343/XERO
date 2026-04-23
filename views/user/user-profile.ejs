@@ -117,24 +117,6 @@
         margin: 0 auto 20px;
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
-    .wallet-card {
-        background: #000;
-        color: #fff;
-        padding: 20px;
-        border-radius: 15px;
-        margin-top: 20px;
-    }
-    .wallet-label {
-        font-size: 10px;
-        text-transform: uppercase;
-        font-weight: 800;
-        opacity: 0.6;
-        letter-spacing: 1px;
-    }
-    .wallet-balance {
-        font-size: 24px;
-        font-weight: 900;
-    }
 </style>
 
 <div class="container my-5 pt-4">
@@ -158,11 +140,6 @@
                         </a>
                         <a href="/manage-address" class="nav-link-custom">
                             <i class="fa-solid fa-location-dot me-2"></i> My Addresses
-                        </a>                        <a href="/wallet" class="nav-link-custom">
-                            <i class="fa-solid fa-wallet me-2"></i> Wallet
-                        </a>
-                        <a href="/change-password" class="nav-link-custom">
-                            <i class="fa-solid fa-lock me-2"></i> Security
                         </a>
                         <a href="/logout" class="nav-link-custom text-danger">
                             <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
@@ -190,23 +167,8 @@
                                 <label class="form-label">Phone Number</label>
                                 <input type="text" class="form-control" name="phone" value="<%= user.phone || '' %>" placeholder="Add your phone number">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Referral Code</label>
-                                <input type="text" class="form-control" value="<%= user.referalCode || 'XERO-NEW' %>" readonly>
-                            </div>
                         </div>
 
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <div class="wallet-card">
-                                    <div class="wallet-label">Available Balance</div>
-                                    <div class="wallet-balance">
-                                        ₹<%= user.wallet && user.wallet.length > 0 ? user.wallet.reduce((a, b) => a + b, 0) : 0 %>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <div class="mt-5 text-end">
                             <button type="submit" class="btn-save">Update Profile</button>
                         </div>

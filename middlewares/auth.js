@@ -10,7 +10,11 @@ const userAuth = (req,res,next)=>{
                 next()
             }
             else{
-                res.redirect('/login')
+                const returnTo = encodeURIComponent(req.originalUrl);
+                req.session.returnTo = req.originalUrl;
+                req.session.save(() => {
+                    res.redirect(`/login?returnTo=${returnTo}`)
+                });
             }
         })
         .catch((error)=>{
@@ -19,7 +23,11 @@ const userAuth = (req,res,next)=>{
         })
     }
     else{
-        res.redirect('/login')
+        const returnTo = encodeURIComponent(req.originalUrl);
+        req.session.returnTo = req.originalUrl;
+        req.session.save(() => {
+            res.redirect(`/login?returnTo=${returnTo}`)
+        });
     }
 }
 

@@ -25,8 +25,14 @@ const getBrand = async (req, res) => {
 const addBrand = async (req, res) => {
     try {
         const brandName = req.body.name;
+        if (!brandName) {
+            return res.status(400).json({ success: false, message: 'Brand name is required' });
+        }
         const findBrand = await Brand.findOne({ brandName });
         if (!findBrand) {
+            if (!req.file) {
+                return res.status(400).json({ success: false, message: 'Brand image is required' });
+            }
             const image = req.file.filename;
             const newBrand = new Brand({
                 brandName: brandName,

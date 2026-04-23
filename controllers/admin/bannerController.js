@@ -27,6 +27,10 @@ const addBanner = async(req,res)=>{
         const data = req.body
         const image = req.file
         
+        if (!image) {
+            return res.status(400).json({ success: false, message: 'Banner image is required' });
+        }
+        
         const newBanner = new Banner({
             image: image.filename,
             title: data.title,

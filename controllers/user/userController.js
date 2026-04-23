@@ -4,7 +4,6 @@ const Product = require('../../models/productSchema')
 const Brand = require('../../models/brandSchema')
 const Banner = require('../../models/bannerSchema')
 const nodemailer = require('nodemailer')
-const env = require('dotenv').config()
 const bcrypt = require('bcrypt')
 
 function generateOtp(){
@@ -54,29 +53,39 @@ const loadSignup = async (req,res) => {
 
 const signup = async (req,res) => {
     try {
-        const {name, email, phone, password, cPassword} = req.body
-        if(password !== cPassword){
+        const {name, email, phone, password, confirmPassword} = req.body
+
+        // Basic server-side validation
+        if(!name || !email || !phone || !password || !confirmPassword){
+            return res.render('user/signup', {message: 'All fields are required'})
+        }
+
+        if(password !== confirmPassword){
             return res.render('user/signup', {message: 'Passwords do not match'})
         }
+        
         const findUser = await User.findOne({email: email})
         if(findUser){
             return res.render('user/signup', {message: 'User with this email already exists'})
         }
 
         const otp = generateOtp()
+        console.log(`Generated OTP for ${email}: ${otp}`)
+        
         const sentMail = await sendVerificationMail(email, otp)
         if(!sentMail){
-            return res.render('user/signup', {message: 'Failed to send OTP'})
+            console.log('Failed to send verification email to:', email)
+            return res.render('user/signup', {message: 'Failed to send OTP. Please check your email or try again.'})
         }
 
         req.session.userOtp = otp
         req.session.userData = {name, email, phone, password}
 
         res.render('user/verify-otp')
-        console.log(`OTP: ${otp}`)
+        console.log(`OTP sent successfully to: ${email}`)
 
     } catch (error) {
-        console.log('error signing up ', error)
+        console.log('error signing up: ', error)
         res.redirect('/page-error')
     }
 }
@@ -135,6 +144,9 @@ const resendOtp = async (req,res) => {
 const loadLogin = async (req,res) => {
     try {
         if(!req.session.user){
+            if (req.query.returnTo) {
+                req.session.returnTo = req.query.returnTo;
+            }
             return res.render('user/login')
         } else {
             res.redirect('/')
@@ -159,7 +171,14 @@ const login = async (req,res) => {
             return res.render('user/login', {message: 'Password incorrect'})
         }
         req.session.user = findUser._id
-        res.redirect('/')
+        const redirectTo = req.session.returnTo || '/';
+        delete req.session.returnTo;
+        req.session.save((err) => {
+            if (err) {
+                console.error("Session save error:", err);
+            }
+            res.redirect(redirectTo)
+        });
     } catch (error) {
         console.log('login error ', error)
         res.render('user/login', {message: 'Login failed. Please try again later.'})

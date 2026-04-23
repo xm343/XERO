@@ -1,7 +1,8 @@
 const User = require('../../models/userSchema')
 const Address = require('../../models/addressSchema')
+const Order = require('../../models/orderSchema')
+const Product = require('../../models/productSchema')
 const nodemailer = require('nodemailer')
-const env = require('dotenv').config()
 const bcrypt = require('bcrypt')
 
 function generateOtp() {
@@ -197,6 +198,24 @@ const addAddress = async (req, res) => {
     try {
         const userId = req.session.user
         const { addressType, name, city, district, landMark, state, pincode, phone, altphone } = req.body
+
+        // Server-side validation
+        if (!addressType || !name || !city || !district || !landMark || !state || !pincode || !phone || !altphone) {
+            return res.redirect('/add-address?message=All fields are required');
+        }
+        if (!/^[A-Za-z\s]{3,20}$/.test(name)) {
+            return res.redirect('/add-address?message=Invalid Name');
+        }
+        if (!/^[0-9]{10}$/.test(phone)) {
+            return res.redirect('/add-address?message=Invalid Phone Number');
+        }
+        if (phone === altphone) {
+            return res.redirect('/add-address?message=Phone and Alternative phone cannot be same');
+        }
+        if (!/^[0-9]{6}$/.test(pincode)) {
+            return res.redirect('/add-address?message=Invalid Pincode');
+        }
+
         const addressData = await Address.findOne({ userId: userId })
         
         if (!addressData) {
@@ -243,6 +262,23 @@ const editAddress = async (req, res) => {
         const userId = req.session.user
         const addressId = req.query.id
         const { addressType, name, city, district, landMark, state, pincode, phone, altphone } = req.body
+
+        // Server-side validation
+        if (!addressType || !name || !city || !district || !landMark || !state || !pincode || !phone || !altphone) {
+            return res.redirect(`/edit-address?id=${addressId}&message=All fields are required`);
+        }
+        if (!/^[A-Za-z\s]{3,20}$/.test(name)) {
+            return res.redirect(`/edit-address?id=${addressId}&message=Invalid Name`);
+        }
+        if (!/^[0-9]{10}$/.test(phone)) {
+            return res.redirect(`/edit-address?id=${addressId}&message=Invalid Phone Number`);
+        }
+        if (phone === altphone) {
+            return res.redirect(`/edit-address?id=${addressId}&message=Phone and Alternative phone cannot be same`);
+        }
+        if (!/^[0-9]{6}$/.test(pincode)) {
+            return res.redirect(`/edit-address?id=${addressId}&message=Invalid Pincode`);
+        }
         
         await Address.updateOne(
             { userId: userId, 'address._id': addressId },
@@ -282,8 +318,30 @@ const deleteAddress = async (req, res) => {
     }
 }
 
+const getOrders = async (req, res) => {
+    try {
+        const userId = req.session.user
+        const userData = await User.findById(userId).populate({
+            path: 'orderHistory',
+            options: { sort: { createdOn: -1 } },
+            populate: {
+                path: 'orderedItems.product',
+                model: 'Product'
+            }
+        })
+        res.render('user/orders', {
+            user: userData,
+            orders: userData.orderHistory,
+            razorpayKey: process.env.RAZORPAY_KEY_ID || ''
+        })
+    } catch (error) {
+        console.log('Error loading orders', error)
+        res.redirect('/page-error')
+    }
+}
+
 
 module.exports = {
     getForgotPassword, getEmailVal, verifyOtp, getConfirmPassword, resendOtp, resetPassword, userProfile,
-    getAddress, getAddAddress, addAddress, getEditAddress, editAddress, deleteAddress
+    getAddress, getAddAddress, addAddress, getEditAddress, editAddress, deleteAddress, getOrders
 }
